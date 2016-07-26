@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+
+import matplotlib.pyplot as plt
+import numpy as np
+import caffe
+import random
+from tqdm import tqdm
+from scipy.spatial import distance
+import pickle
+import cv2
+
+
+caffe.set_device(0)
+caffe.set_mode_gpu()
+
+# load networks in test mode 
+net2 = caffe.Net('vgg1.prototxt','./vgg1_weights.caffemodel',caffe.TEST)
+net=caffe.Net('vgg2.prototxt','vgg2_weights.caffemodel',caffe.TEST)
+
+
+randoms = []
+
+
+filters = 64                  #size of filter...changes with each layer
+val_images = 2000             #number of images in validation set
+rf = 20                       #receptive field size chosen to do spatial aggregation
+activation_size = 512         #size of activation map of that layer
+layer = 'conv1_2'             #layer chosen for comparison
+
+
+
+data=np.zeros((filters,rf*rf*val_images)) 
+
+print 'Net 1'
+# in my case, the first net used a batch size of 5
+for i in tqdm(range(0,400)):
+	net.forward()
+	for k in range(0,5):
+		c1_1 = net.blobs[layer].data
+		c1_1 = c1_1[k]
+		imgno =(i*5+k)
+		r = random.randrange(0,activation_size-rf)
+		randoms.append(r)
+		for j in range(0,filters):
+		# random crop of activation 
+			data[j,imgno*rf*rf:(imgno+1)*rf*rf] = c1_1[j][r:r+rf,r:r+rf].reshape(rf*rf)  
+			
+
+print 'Net 2'
+data2=np.zeros((filters,rf*rf*val_images)) 
+#in my case batch size of second net is 2
+for i in tqdm(range(0,1000)):
+	net2.forward()
+	for k in range(0,2):
+		
+		c1_1 = net2.blobs[layer].data
+		c1_1 = c1_1[k]
+		imgno =(i*2+k)
+		# compare same random patch as used for net 1
+		r = randoms[imgno]
+		for j in range(0,filters):
+			data2[j,imgno*rf*rf:(imgno+1)*rf*rf] = c1_1[j][r:r+rf,r:r+rf].reshape(rf*rf)  
+
+
+
+# #get max correlated value for net1 from net2
+
+
+c=np.corrcoef(data,data2)[0:filters,filters::]
+plt.imshow(c,cmap='gray')
+plt.show()
+
+#take max along each row of c and then take average like in paper
+max_corrs = []
+for t in range(0,filters):
+	max_corrs.append(np.max(c[t,:]))
+
+print 'len is ',len(max_corrs)
+
+print 'mean correlation is ', np.mean(np.array(max_corrs))
