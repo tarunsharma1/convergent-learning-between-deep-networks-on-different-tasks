@@ -20,8 +20,11 @@ https://cloud.githubusercontent.com/assets/8834964/17228675/fbd53210-54e1-11e6-8
 
 
 
+This is the correlation comparison between vgg_vgg random and vgg vs a vgg trained on a different task.
+https://cloud.githubusercontent.com/assets/8834964/17229053/d3ed42e0-54e3-11e6-9034-5dc20aad7ce5.png
 
 
+This would show where that particular task features would affect the features the most. Once the layers of least correaltion are known, further steps of visualization can be used
 
 The paper was published at ICLR 2016 and the authors are Yixuan Li , Jason Yosinski , Jeff Clune, Hod Lipson, & John Hopcroft
 . Again I have nothing to do with the original work. This is just my own implementation of a part of their work over which I hold
