@@ -16,6 +16,7 @@ between networks trained on different tasks also.
 
 Here is an example where I have correlated two vgg networks on the task of classification. This is not on imagenet but a different dataset.
 
+https://cloud.githubusercontent.com/assets/8834964/17228675/fbd53210-54e1-11e6-8eda-6433042fb275.png
 
 
 
