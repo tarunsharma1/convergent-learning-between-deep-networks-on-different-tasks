@@ -14,6 +14,14 @@ For a thorough understanding of the procedure and its implications I recommend g
 the paper the comparison is done between two AlexNets initiallized from random weights. But the correlation can be done 
 between networks trained on different tasks also.
 
+Here is an example where I have correlated two vgg networks on the task of classification. This is not on imagenet but a different dataset.
+
+
+
+
+
+
+
 The paper was published at ICLR 2016 and the authors are Yixuan Li , Jason Yosinski , Jeff Clune, Hod Lipson, & John Hopcroft
 . Again I have nothing to do with the original work. This is just my own implementation of a part of their work over which I hold
 no rights. 
